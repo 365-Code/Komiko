@@ -52,25 +52,24 @@ const Sidebar = () => {
 
   return (
     <>
+      <div className="hidden h-full w-[100px] sm:block" />
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={`flex-col ${
           isHovered ? "items-start" : "items-center"
-        } sticky hidden h-screen w-[100px] justify-between p-6 transition-all hover:w-[250px] sm:flex`}
+        } group/sidebar fixed z-20 hidden h-screen w-[100px] justify-between bg-transparent/40 p-6 transition-all hover:w-[250px] sm:flex`}
       >
-        <div className="w-full">
-          <Link href={"/"}>
-            <div className="h-[56px] w-[56px] overflow-hidden rounded-full">
-              <img
-                loading="lazy"
-                src={"/logo1.png"}
-                width={300}
-                height={300}
-                alt="komiko"
-                className="h-full w-full scale-[2] object-cover object-center"
-              />
-            </div>
+        <div className="w-fit">
+          <Link href={"/"} className="w-fit">
+            <img
+              loading="lazy"
+              src={"/logo1.png"}
+              width={300}
+              height={300}
+              alt="komiko"
+              className="h-[56px] w-[56px] scale-[2] object-cover object-center"
+            />
           </Link>
         </div>
         <ul className="flex w-full flex-col gap-2">
@@ -101,7 +100,10 @@ const Sidebar = () => {
 
         <div></div>
         <div className="absolute right-0 top-0 flex h-full flex-col justify-center">
-          <Separator orientation="vertical" className="my-auto h-[90%]" />
+          <Separator
+            orientation="vertical"
+            className="my-auto h-[90%] group-hover/sidebar:hidden"
+          />
         </div>
       </div>
 

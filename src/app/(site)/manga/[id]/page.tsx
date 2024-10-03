@@ -145,7 +145,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
           </p>
         </div>
       </div>
-      <div className="mx-auto flex flex-col mt-8 flex-1 sm:w-full h-full md:bg-white/40 pb-4 md:px-16">
+      <div className="mx-auto mt-8 flex h-full flex-1 flex-col pb-4 sm:w-full md:bg-white/40 md:px-16">
         <div className="flex flex-col md:flex-row">
           <div className="basis-1/2"></div>
           <div className="relative flex-1 py-6">
@@ -174,7 +174,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
           </div>
         </div>
 
-        <div className="mt-6 flex-1 flex flex-col justify-between overflow-hidden md:flex-row">
+        <div className="mt-6 flex flex-1 flex-col justify-between overflow-hidden md:flex-row">
           <div className="basis-[45%]">
             <h2 className="text-lg font-semibold">Description</h2>
             <p className="text-sm">
@@ -184,7 +184,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
                 ].split("\n\n")[0]}
             </p>
           </div>
-          <div className="h-full flex basis-[45%] flex-col space-y-4 overflow-hidden">
+          <div className="flex h-full basis-[45%] flex-col space-y-4 overflow-hidden">
             <div className="">
               <h3 className="font-semibold">Genres</h3>
               <p className="text-sm">
@@ -205,7 +205,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
                 ))}
               </p>
             </div>
-            <div className="flex flex-1 flex-col overflow-hidden">
+            <div className="flex flex-1 flex-col gap-2 overflow-hidden">
               <h3 className="font-semibold">Chapters</h3>
               <ScrollArea className="mt-1 h-[150px] w-full">
                 <div className="flex flex-col-reverse gap-2">

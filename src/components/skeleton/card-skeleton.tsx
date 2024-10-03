@@ -3,10 +3,13 @@ import React from "react";
 const CardSkeletonLoader = ({ variant }: { variant: "default" | "small" }) => {
   return (
     <div
-      className={` ${skeletonVariants[variant]} relative scale-100 animate-pulse snap-start rounded-xl transition-all flex flex-col`}
+      className={` ${skeletonVariants[variant]} relative flex scale-100 animate-pulse snap-start flex-col rounded-xl transition-all`}
     >
       {/* Image Skeleton */}
-      <div className="h-full w-full rounded-xl bg-gray-300" />
+      <img
+        src="/logo.png"
+        className="h-full w-full rounded-xl bg-gray-300 object-cover object-center"
+      />
 
       {/* Title Skeleton */}
       <div className="mt-2 h-4 w-3/4 rounded bg-gray-300"></div>

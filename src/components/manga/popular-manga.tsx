@@ -17,7 +17,7 @@ const PopularManga = () => {
       <h3 className="text-xl font-medium">Popular Now</h3>
       <div className="flex flex-1 snap-x flex-row items-center gap-2 overflow-x-auto overflow-y-hidden pt-4 no-scrollbar">
         {popularManga?.map((manga, ind) => (
-          <MangaCard key={ind} manga={manga} variant="small" />
+          <MangaCard key={ind} manga={manga} variant="medium" />
         ))}
         {isLoading &&
           Array(10)

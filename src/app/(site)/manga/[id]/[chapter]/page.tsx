@@ -15,7 +15,7 @@ import { IMangaChapter, IMangaInfo, IMangaResult } from "@consumet/extensions";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 
 interface PageProps {
@@ -46,7 +46,7 @@ const Page = ({ params }: PageProps) => {
               ].title.toString(),
             },
             {
-              id: manga?.id || "",
+              id: params.id || "",
               description: (manga?.description as { [lang: string]: string })[
                 "en"
               ].split(".")[0],
@@ -60,6 +60,7 @@ const Page = ({ params }: PageProps) => {
         throw error;
       }
     },
+    staleTime: 15000,
   });
 
   if (isLoading) {
@@ -100,9 +101,9 @@ const Page = ({ params }: PageProps) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <ChapterController manga={manga} mangaId={params.id} chapter={chapter} />
+      <ChapterController manga={manga} chapter={chapter} />
 
-      <div>
+      <div className="mx-auto">
         {chapterPages?.map((pg) => (
           <img
             key={pg.page}
@@ -114,7 +115,7 @@ const Page = ({ params }: PageProps) => {
         ))}
       </div>
 
-      <ChapterController manga={manga} mangaId={params.id} chapter={chapter} />
+      <ChapterController manga={manga} chapter={chapter} />
 
       <BackToTop />
     </div>
@@ -130,12 +131,13 @@ interface ControllerProps {
     title: string;
   } | null;
   manga: IMangaInfo | IMangaResult | null;
-  mangaId: string;
 }
 
-const ChapterController = ({ chapter, manga, mangaId }: ControllerProps) => {
+const ChapterController = ({ chapter, manga }: ControllerProps) => {
   const nav = useRouter();
-
+  const params = useParams();
+  const mangaId = params.id;
+  const chapterId = params.chapter as string;
   return (
     <div className="mb-4 flex w-full justify-between px-4 sm:px-0">
       <ComboBox
@@ -145,7 +147,7 @@ const ChapterController = ({ chapter, manga, mangaId }: ControllerProps) => {
         }))}
         listName="Chapters"
         onChange={(v) => nav.push(`/manga/${mangaId}/${v}`)}
-        defaultValue={chapter?.id}
+        defaultValue={chapterId}
       />
       <div className="flex items-center gap-2">
         {chapter && chapter?.index - 1 >= 0 && (
@@ -174,33 +176,6 @@ const ChapterController = ({ chapter, manga, mangaId }: ControllerProps) => {
     </div>
   );
 };
-
-// const BackToTop = () => {
-//   const scrollRef = useRef<HTMLButtonElement | null>(null);
-
-//   useEffect(() => {
-//     if(!scrollRef.current) return
-
-//     console.log(window.scrollY);
-
-//     console.log(scrollRef.current.scrollTop);
-
-//     console.log(scrollY);
-//     window.onscroll = () => {
-//     };
-//   }, []);
-
-//   return (
-//     <Link href={"#"}>
-//       <Button
-//         ref={scrollRef}
-//         className="fixed bottom-4 right-8 aspect-square rounded-full p-0"
-//       >
-//         <ChevronUp />
-//       </Button>
-//     </Link>
-//   );
-// };
 
 const BackToTop = () => {
   const scrollRef = useRef<HTMLButtonElement | null>(null);

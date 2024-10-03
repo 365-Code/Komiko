@@ -3,7 +3,8 @@ import { IMangaInfo } from "@consumet/extensions";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { MoveUpRight } from "lucide-react";
+import { BookOpen } from "lucide-react";
+import { Card } from "../ui/card";
 
 const Header = () => {
   const [lastManga, setLastManga] = useState<{
@@ -41,7 +42,8 @@ const Header = () => {
   return (
     <>
       {lastManga ? (
-        <div className="flex flex-col-reverse items-start gap-4 md:flex-row">
+        // <div className="flex flex-col-reverse items-start gap-4 py-4 md:flex-row">
+        <div className="grid grid-cols-2">
           <div className="flex flex-1 flex-col gap-4">
             <h2 className="text-2xl font-medium sm:text-4xl md:text-5xl">
               Keep the story going..
@@ -55,23 +57,11 @@ const Header = () => {
               href={"/manga/" + lastManga.id + "/" + lastManga.chapterId}
             >
               <Button className="w-fit rounded-full">
-                Contineue Reading <MoveUpRight size={20} className="ml-2 text" />
+                Contineue Reading{" "}<BookOpen size={20} className="text ml-2" />
               </Button>
             </Link>
           </div>
-          <div className="flex basis-[50%] flex-row gap-3">
-            <div className="aspect-[4/5] h-[150px]">
-              <img src={lastManga.image} className="h-full w-full rounded-xl" />
-            </div>
-            <div className="basis-[60%]">
-              <h3 className="line-clamp-2 text-xl font-medium">
-                {lastManga.title}
-              </h3>
-              <p className="line-clamp-4 text-sm font-medium italic">
-                {lastManga.description}.
-              </p>
-            </div>
-          </div>
+          <LastMangaCard lastManga={lastManga} />
         </div>
       ) : (
         <div className="flex w-[600px] max-w-full flex-col gap-4">
@@ -87,3 +77,51 @@ const Header = () => {
 };
 
 export default Header;
+
+const LastMangaCard = ({
+  lastManga,
+}: {
+  lastManga: { image: string; id: string; title: string; description: string };
+}) => {
+  return (
+    <Card className="relative h-[200px] overflow-hidden">
+      <img
+        src={lastManga.image}
+        alt="Featured Manga"
+        className="h-full w-full rounded-lg object-cover opacity-40"
+      />
+      <div className="absolute inset-0 flex items-end rounded-lg bg-gradient-to-t from-black/40 to-transparent p-6">
+        <div>
+          <Link
+            href={"/manga/" + lastManga.id}
+            className="mb-2 text-2xl font-bold text-primary"
+          >
+            {lastManga.title}
+          </Link>
+          <p className="">{lastManga.description}</p>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+{
+  /* <div className="flex basis-[50%] flex-row gap-3">
+<div className="aspect-[4/5] h-[150px]">
+  <img
+    src={lastManga.image}
+    className="h-full w-full rounded-xl object-cover object-center"
+  />
+</div>
+<div className="basis-[60%]">
+  <Link href={`/manga/${lastManga.id}`} className="text-primary">
+    <h3 className="line-clamp-2 text-xl font-medium">
+      {lastManga.title}
+    </h3>
+  </Link>
+  <p className="line-clamp-4 text-sm font-medium italic">
+    {lastManga.description}.
+  </p>
+</div>
+</div> */
+}

@@ -5,13 +5,12 @@ import { Badge } from "../ui/badge";
 
 type Props = {
   manga: IMangaResult;
-  variant: "default" | "small";
+  variant: "default" | "small" | "medium";
   onHover?: (desc: string) => void;
   onHoverOver?: () => void;
 };
 
 const MangaCard = ({ manga, variant, onHover, onHoverOver }: Props) => {
-
   return (
     <Link href={"/manga/" + manga.id}>
       <div
@@ -27,7 +26,7 @@ const MangaCard = ({ manga, variant, onHover, onHoverOver }: Props) => {
           loading="lazy"
           src={manga.image || "/logo1.png"}
           alt={manga.title.toString() || ""}
-          className="aspect-[4/5] h-full w-full rounded-xl object-cover shadow-black drop-shadow-lg"
+          className="aspect-[4/5] h-full w-full rounded-xl object-cover object-center shadow-black drop-shadow-lg"
         />
         <p className="mt-2 line-clamp-1 text-sm font-medium text-primary">
           {manga.title.toString()}
@@ -42,5 +41,6 @@ export default MangaCard;
 
 const variants: { [index: string]: string } = {
   small: "min-w-[150px] max-w-[150px]",
-  default: "min-w-[290px] max-w-[300px] ",
+  medium: "min-w-[220px] max-w-[280px]",
+  default: "min-w-[290px] max-w-[300px]",
 };

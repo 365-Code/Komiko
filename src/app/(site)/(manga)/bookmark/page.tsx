@@ -1,4 +1,5 @@
 "use client";
+import Carousel from "@/components/carousel/carousel";
 import MangaCard from "@/components/manga/manga-card";
 import RecentManga from "@/components/manga/recent-manga";
 import { IMangaInfo } from "@consumet/extensions";
@@ -21,9 +22,17 @@ const Page = () => {
       <h2 className="mb-4 text-4xl font-semibold">Bookmarks</h2>
       <div className="flex flex-wrap gap-2">
         {bookmarks.length ? (
-          bookmarks.map((bkm) => (
-            <MangaCard key={bkm.id} manga={bkm as IMangaInfo} variant="small" />
-          ))
+          bookmarks.length >= 10 ? (
+            <Carousel mangaList={bookmarks} />
+          ) : (
+            bookmarks.map((bkm) => (
+              <MangaCard
+                key={bkm.id}
+                manga={bkm as IMangaInfo}
+                variant="small"
+              />
+            ))
+          )
         ) : (
           <div className="col-span-full text-center text-lg text-gray-500">
             You haven&apos;t bookmarked anything yet. Explore some manga!

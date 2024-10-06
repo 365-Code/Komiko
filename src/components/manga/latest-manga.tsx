@@ -3,12 +3,11 @@ import { getLatestUpdates } from "@/actions/mangadex";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import FlatMangaCard from "./flat-manga-card";
-import { IMangaResult } from "@consumet/extensions";
 import FlatMangaCardSkeleton from "../skeleton/flat-skeleton";
 
 const LatestManga = () => {
   const { data: latestManga, isLoading } = useQuery({
-    queryKey: ["popular-manga"],
+    queryKey: ["latest-manga"],
     queryFn: getLatestUpdates,
   });
 
@@ -20,9 +19,11 @@ const LatestManga = () => {
         {/* Uncomment this section when data is available */}
         {/* <div className="flex flex-wrap gap-4 no-scrollbar md:max-h-[150px]"> */}
         <div className="flex flex-wrap gap-4 no-scrollbar">
-          {latestManga?.map((manga: IMangaResult, ind) => (
-            <FlatMangaCard key={ind} manga={manga} />
-          ))}
+          {
+            latestManga?.map((manga, i) => (
+              <FlatMangaCard key={i} manga={manga} />
+            ))
+          }
           {isLoading &&
             Array(10)
               .fill(0)

@@ -56,8 +56,8 @@ const Header = () => {
               className="w-fit"
               href={"/manga/" + lastManga.id + "/" + lastManga.chapterId}
             >
-              <Button className="w-fit rounded-full">
-                Contineue Reading{" "}<BookOpen size={20} className="text ml-2" />
+              <Button className="w-fit rounded-full py-6">
+                Continue Reading{" "}<BookOpen size={20} className="text ml-2" />
               </Button>
             </Link>
           </div>

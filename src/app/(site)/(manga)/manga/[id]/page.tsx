@@ -99,16 +99,19 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
 
   if (isLoading) {
     return (
-      <div className="w-full">
+      <div className="h-full w-full">
         <MangaSkeleton />
       </div>
     );
   }
 
   if (!mangaInfo) {
-    return <div>Failed to Fetch Manga</div>;
+    return (
+      <div className="mx-auto text-3xl font-medium">Failed to Fetch Manga</div>
+    );
   }
 
+  console.log(mangaInfo);
   return (
     <div className="flex flex-1 flex-col gap-6 pt-6">
       <div id="manga-header" className="flex flex-col items-start md:flex-row">
@@ -133,7 +136,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
                   mangaInfo.altTitles ? mangaInfo.altTitles[0] : { a: "b" },
                 )}
           </h1>
-          <p className="text-sm font-medium text-primary">{mangaInfo.status}</p>
+          <Badge className="text-sm font-medium">{mangaInfo.status}</Badge>
           <p className="line-clamp-3 flex flex-wrap gap-2 text-sm">
             {mangaInfo.description &&
               String(
@@ -188,7 +191,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
             <div className="">
               <h3 className="font-semibold">Genres</h3>
               <p className="text-sm">
-                {mangaInfo.genres?.map((genre, i) => (
+                {mangaInfo.genres?.map((genre: string, i: number) => (
                   <Badge key={i} className="mr-1">
                     {genre}
                   </Badge>
@@ -198,7 +201,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
             <div className="">
               <h3 className="font-semibold">Themes</h3>
               <p className="text-sm">
-                {mangaInfo.themes?.map((theme, i) => (
+                {mangaInfo.themes?.map((theme: string, i: number) => (
                   <Badge key={i} className="mr-1">
                     {theme}
                   </Badge>
@@ -209,7 +212,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
               <h3 className="font-semibold">Chapters</h3>
               <ScrollArea className="mt-1 h-[150px] w-full">
                 <div className="flex flex-col-reverse gap-2">
-                  {mangaInfo.chapters?.map((chapter) => (
+                  {mangaInfo.chapters?.map((chapter: IMangaChapter) => (
                     <ChapterCard
                       key={chapter.id}
                       chapter={chapter}

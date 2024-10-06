@@ -1,4 +1,9 @@
-import { IMangaChapter, IMangaInfo, MANGA } from "@consumet/extensions";
+import {
+  IMangaChapter,
+  IMangaInfo,
+  IMangaResult,
+  MANGA,
+} from "@consumet/extensions";
 
 export const getMangaInfo = async (mangaId: string) => {
   try {
@@ -8,7 +13,7 @@ export const getMangaInfo = async (mangaId: string) => {
       return [];
     }
     const chaptersLength = mangaInfo.chapters?.length || 0;
-    const mangaChapters = [(mangaInfo.chapters as IMangaChapter[])[0]];
+    const mangaChapters = mangaInfo.chapters as IMangaChapter[];
     for (let index = 1; index < chaptersLength; index++) {
       const currElement = (mangaInfo.chapters as IMangaChapter[])[index];
       const prevElement = (mangaInfo.chapters as IMangaChapter[])[index - 1];
@@ -16,10 +21,12 @@ export const getMangaInfo = async (mangaId: string) => {
         mangaChapters.push(currElement);
       }
     }
+    console.log(mangaInfo.chapters);
+
     mangaInfo = {
       ...mangaInfo,
       chapters: mangaChapters.reverse(),
-    };
+    } as IMangaInfo;
     return mangaInfo;
   } catch (error) {
     throw error;
@@ -35,7 +42,7 @@ export const getChapterPages = async (chapterId: string) => {
   }
 };
 
-export const getLatestUpdates = async () => {
+export const getLatestUpdates = async (): Promise<IMangaResult[]> => {
   try {
     const manga = new MANGA.MangaDex();
     const { results } = await manga.fetchLatestUpdates();
@@ -65,10 +72,12 @@ export const getRecentManga = async () => {
   }
 };
 
-export const getSearchResults = async (query: string) => {
+export const getSearchResults = async (
+  query: string,
+): Promise<IMangaResult[]> => {
   try {
     const manga = new MANGA.MangaDex();
-    const searchResults = await manga.search(query || "");
+    const searchResults = await manga.search(query || "", undefined, 20);
     return searchResults.results;
   } catch (error) {
     throw error;

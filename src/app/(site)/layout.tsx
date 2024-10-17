@@ -1,3 +1,4 @@
+import Footer from "@/components/manga/footer";
 import SearchBar from "@/components/search-bar";
 import Sidebar from "@/components/sidebar";
 import { Toaster } from "@/components/ui/sonner";
@@ -5,7 +6,7 @@ import React from "react";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="w- relative flex h-screen">
+    <main className="w- relative flex min-h-screen">
       {/* Background Split */}
       <div className="fixed left-0 top-0 -z-10 flex h-full min-h-screen w-full">
         {/* Left section (45%) */}
@@ -22,10 +23,13 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       {/* Main Content Area */}
       <div
         id="main-page"
-        className="flex h-full flex-1 flex-col overflow-x-hidden pt-6 custom-scrollbar sm:px-8"
+        className="flex flex-1 flex-col overflow-x-hidden pt-6 custom-scrollbar"
       >
-        <SearchBar />
-        <div className="flex h-full flex-1 flex-col">{children}</div>
+        <div className="sm:px-8">
+          <SearchBar />
+          <div className="flex h-full flex-1 flex-col">{children}</div>
+        </div>
+        <Footer />
       </div>
       <Toaster richColors />
     </main>

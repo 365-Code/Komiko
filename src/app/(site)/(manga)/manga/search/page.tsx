@@ -3,11 +3,31 @@ import { getSearchResults } from "@/actions/mangadex";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import Header from "@/components/manga/header";
-import Carousel from "@/components/carousel/carousel";
+import MangaCard from "@/components/card/manga-card";
+import MangaCardSkeleton from "@/components/skeleton/manga-card-skeleton";
+import { EffectCoverflow } from "swiper/modules";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+
+const DynamicCarousel = dynamic(
+  () => import("@/components/carousel/carousel2"),
+  {
+    ssr: false,
+  },
+);
 
 const Page = ({ searchParams }: { searchParams: { query: string } }) => {
-
-  const { mutateAsync: fetchSearchResults, data: searchResults } = useMutation({
+  const {
+    mutateAsync: fetchSearchResults,
+    data: searchResults,
+    isPending: isLoading,
+  } = useMutation({
     mutationFn: async () => {
       const data = await getSearchResults(searchParams.query);
       return data;
@@ -17,27 +37,37 @@ const Page = ({ searchParams }: { searchParams: { query: string } }) => {
   useEffect(() => {
     fetchSearchResults();
   }, [searchParams]);
-  console.log(searchResults);
 
   return (
     <div className="mt-6 flex flex-1 flex-col gap-4 px-4 pb-4 pt-6 sm:px-0">
       <Header />
-      <Carousel mangaList={searchResults} />
-      {/* <div className="my-auto flex items-center gap-4 overflow-x-scroll py-4 no-scrollbar">
-        {searchResults?.map((res: IMangaResult) => (
-          <MangaCard
-            key={res.id}
-            onHover={(desc) => setHoverDes(desc)}
-            onHoverOver={() => setHoverDes("")}
-            manga={res}
-            variant="default"
-          />
-        ))}
-        {isPending &&
-          Array(10)
-            .fill(0)
-            .map((_, i) => <CardSkeletonLoader key={i} variant="default" />)}
-      </div> */}
+      {!isLoading && (!searchResults || searchResults.length == 0) ? (
+        <Card className="mx-auto flex w-fit max-w-full flex-col items-center sm:max-w-[600px] sm:flex-row">
+          <CardHeader>
+            <Image
+              width={400}
+              height={400}
+              alt="nothing-found"
+              src={"/loader.jpg"}
+              className="h-[200px] w-[200px]"
+            />
+          </CardHeader>
+          <CardHeader>
+            <CardTitle>Nothing Found</CardTitle>
+            <CardDescription className="hyphens-auto">
+              Couldn&apos;t Fetch anything for query {searchParams.query}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      ) : (
+        <DynamicCarousel
+          mangaList={searchResults}
+          SlideComponent={MangaCard}
+          SkeletonComponent={MangaCardSkeleton}
+          modules={[EffectCoverflow]}
+          loading={isLoading}
+        />
+      )}
     </div>
   );
 };

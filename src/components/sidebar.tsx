@@ -58,20 +58,20 @@ const Sidebar = () => {
         onMouseLeave={() => setIsHovered(false)}
         className={`flex-col ${
           isHovered ? "items-start" : "items-center"
-        } group/sidebar fixed z-20 hidden h-screen w-[100px] justify-between bg-transparent/40 p-6 transition-all hover:w-[250px] sm:flex`}
+        } group/sidebar fixed z-20 hidden h-screen w-[100px] justify-between bg-transparent/90 p-6 transition-all hover:w-[250px] sm:flex`}
       >
-        <div className="w-fit">
-          <Link href={"/"} className="w-fit">
+        <Link href={"/"}>
+          <div className="h-[60px] w-[60px]">
             <img
               loading="lazy"
-              src={"/logo1.png"}
+              src={"/komiko.jpg"}
               width={300}
               height={300}
               alt="komiko"
-              className="h-[56px] w-[56px] scale-[2] object-cover object-center"
+              className="h-full w-full rounded-full object-cover object-center"
             />
-          </Link>
-        </div>
+          </div>
+        </Link>
         <ul className="flex w-full flex-col gap-2">
           {links.map((lnk, i) => (
             <Link href={lnk.url} key={i} className="h-full w-full text-center">
@@ -118,7 +118,7 @@ const Sidebar = () => {
                     <div className="h-[56px] w-[56px] overflow-hidden rounded-full">
                       <img
                         loading="lazy"
-                        src={"/logo1.png"}
+                        src={"/komiko.jpg"}
                         width={300}
                         height={300}
                         alt="komiko"

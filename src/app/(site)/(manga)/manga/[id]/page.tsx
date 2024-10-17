@@ -9,10 +9,17 @@ import { getMangaInfo } from "@/actions/mangadex";
 import { useMangaStore } from "@/store/manga-store";
 import { IMangaChapter, IMangaInfo } from "@consumet/extensions";
 import { useQuery } from "@tanstack/react-query";
-import { Bookmark, Download, Share2 } from "lucide-react";
+import { Bookmark, BookmarkCheck, Share2 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const Page = ({ params: { id } }: { params: { id: string } }) => {
   const { setManga } = useMangaStore();
@@ -21,6 +28,7 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
 
   const { data: mangaInfo, isLoading } = useQuery({
     queryKey: ["get-manga-info"],
+    gcTime: 0,
     queryFn: async () => {
       const data = await getMangaInfo(id);
       setManga(data as IMangaInfo);
@@ -36,10 +44,13 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
         id: string;
         image: string;
         title: string;
+        status: string;
+        release_date: number;
       }>;
-
       if (bookmarks.findIndex((v) => v.id == mangaInfo?.id) != -1) {
         setIsBookMarked(true);
+      } else {
+        setIsBookMarked(false);
       }
     }
   }, [mangaInfo]);
@@ -62,6 +73,8 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
               id: mangaInfo?.id,
               image: mangaInfo?.image,
               title: mangaInfo?.title,
+              status: mangaInfo?.status,
+              chapters: mangaInfo?.chapters?.length,
             },
           ]),
         );
@@ -80,6 +93,8 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
             id: mangaInfo?.id,
             image: mangaInfo?.image,
             title: mangaInfo?.title,
+            status: mangaInfo?.status,
+            chapters: mangaInfo?.chapters?.length,
           },
         ]),
       );
@@ -111,32 +126,35 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
     );
   }
 
-  console.log(mangaInfo);
   return (
-    <div className="flex flex-1 flex-col gap-6 pt-6">
-      <div id="manga-header" className="flex flex-col items-start md:flex-row">
-        <div className="relative basis-1/2">
-          <div className="relative left-0 top-0 h-full w-full md:absolute">
-            <div className="mx-auto h-full w-[300px]">
+    <div className="flex flex-1 flex-col gap-4 md:gap-6">
+      {/* Header */}
+      <div id="manga-header" className="grid md:grid-cols-2">
+        <div className="relative h-full w-full">
+          <div className="h-full w-full md:absolute md:left-0 md:top-0">
+            <div className="mx-auto w-fit">
               <img
                 width={500}
                 height={500}
                 src={mangaInfo.image || ""}
                 alt={String(mangaInfo.title) || ""}
-                className="top-0 aspect-[4/5] -translate-y-4 scale-[0.85] rounded-xl"
+                className="top-0 h-[300px] w-full rounded-xl"
               />
             </div>
           </div>
         </div>
-        <div className="my-auto line-clamp-6 basis-[35%] space-y-4">
-          <h1 className="text-5xl font-semibold">
+
+        <div className="my-auto flex w-full max-w-[80%] flex-col gap-4 p-4 sm:p-0 sm:text-4xl">
+          <h1 className="line-clamp-3 text-3xl font-semibold sm:text-4xl md:text-5xl">
             {mangaInfo.title
               ? mangaInfo.title.toString()
               : Object.values(
                   mangaInfo.altTitles ? mangaInfo.altTitles[0] : { a: "b" },
                 )}
           </h1>
-          <Badge className="text-sm font-medium">{mangaInfo.status}</Badge>
+          <Badge className="w-fit text-sm font-medium">
+            {mangaInfo.status}
+          </Badge>
           <p className="line-clamp-3 flex flex-wrap gap-2 text-sm">
             {mangaInfo.description &&
               String(
@@ -148,79 +166,88 @@ const Page = ({ params: { id } }: { params: { id: string } }) => {
           </p>
         </div>
       </div>
-      <div className="mx-auto mt-8 flex h-full flex-1 flex-col pb-4 sm:w-full md:bg-white/40 md:px-16">
-        <div className="flex flex-col md:flex-row">
-          <div className="basis-1/2"></div>
-          <div className="relative flex-1 py-6">
-            <div className="flex items-center justify-between">
+      {/* Details */}
+      <div className="mx-auto flex w-full flex-1 flex-col py-4 md:mt-8 md:overflow-hidden md:bg-white/40 md:px-16">
+        <div className="grid gap-2 md:grid-cols-2">
+          <div />
+          {/* Actions */}
+          <div className="relative px-4 md:px-0 md:py-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <Link
                 href={`/manga/${id}/${(mangaInfo.chapters as IMangaChapter[])[0]?.id}`}
               >
                 <Button>Start Reading</Button>
               </Link>
-              <div className="flex items-center gap-2">
+              <div className="flex w-fit items-center gap-2">
                 <Button
                   onClick={handleBookMark}
                   className={`h-[40px] w-[40px] rounded-full bg-secondary p-3 text-primary hover:text-secondary ${isBookMarked ? "bg-primary text-secondary" : ""}`}
                 >
-                  <Bookmark className="h-full w-full" />
+                  {isBookMarked ? <BookmarkCheck /> : <Bookmark />}
                 </Button>
                 <Button className="h-[40px] w-[40px] rounded-full bg-secondary p-3 text-primary hover:text-secondary">
                   <Share2 className="h-full w-full" />
                 </Button>
-                <Button className="h-[40px] w-[40px] rounded-full bg-secondary p-3 text-primary hover:text-secondary">
-                  <Download className="h-full w-full" />
-                </Button>
               </div>
             </div>
-            <Separator className="absolute bottom-0 left-0" />
+            <Separator className="mt-2" />
           </div>
         </div>
+        {/* Details */}
+        <div className="grid flex-1 gap-2 md:grid-cols-2">
+          {/* Description */}
+          <Card className="mb-2 h-fit md:basis-[45%]">
+            <CardHeader>
+              <CardTitle>Description</CardTitle>
+              <CardDescription className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                {mangaInfo.description &&
+                  (mangaInfo.description as { [lang: string]: string })[
+                    "en"
+                  ].split("\n\n")[0]}
+              </CardDescription>
+            </CardHeader>
+          </Card>
 
-        <div className="mt-6 flex flex-1 flex-col justify-between overflow-hidden md:flex-row">
-          <div className="basis-[45%]">
-            <h2 className="text-lg font-semibold">Description</h2>
-            <p className="text-sm">
-              {mangaInfo.description &&
-                (mangaInfo.description as { [lang: string]: string })[
-                  "en"
-                ].split("\n\n")[0]}
-            </p>
-          </div>
-          <div className="flex h-full basis-[45%] flex-col space-y-4 overflow-hidden">
-            <div className="">
-              <h3 className="font-semibold">Genres</h3>
-              <p className="text-sm">
-                {mangaInfo.genres?.map((genre: string, i: number) => (
-                  <Badge key={i} className="mr-1">
-                    {genre}
-                  </Badge>
-                ))}
-              </p>
-            </div>
-            <div className="">
-              <h3 className="font-semibold">Themes</h3>
-              <p className="text-sm">
-                {mangaInfo.themes?.map((theme: string, i: number) => (
-                  <Badge key={i} className="mr-1">
-                    {theme}
-                  </Badge>
-                ))}
-              </p>
-            </div>
-            <div className="flex flex-1 flex-col gap-2 overflow-hidden">
-              <h3 className="font-semibold">Chapters</h3>
-              <ScrollArea className="mt-1 h-[150px] w-full">
-                <div className="flex flex-col-reverse gap-2">
-                  {mangaInfo.chapters?.map((chapter: IMangaChapter) => (
-                    <ChapterCard
-                      key={chapter.id}
-                      chapter={chapter}
-                      mangaId={id}
-                    />
+          {/* other details */}
+          <div className="h-fit">
+            <div className="flex h-full flex-col-reverse md:flex-col">
+              {/* Genres */}
+              <Card className="mb-2">
+                <CardHeader>
+                  <CardTitle>Genres</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {mangaInfo.genres?.map((genre: string, i: number) => (
+                    <Badge className="mb-2 mr-2" key={i}>
+                      {genre}
+                    </Badge>
                   ))}
-                </div>
-              </ScrollArea>
+                  {(mangaInfo.themes as Array<string>)?.map(
+                    (theme: string, i: number) => (
+                      <Badge className="mb-2 mr-2" key={i}>
+                        {theme}
+                      </Badge>
+                    ),
+                  )}
+                </CardContent>
+              </Card>
+              {/* Chapters */}
+              <Card className="mb-2 flex h-fit flex-col overflow-hidden">
+                <CardHeader>Chapters</CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-[150px] w-full ">
+                    <div className="flex flex-col-reverse">
+                      {mangaInfo.chapters?.map((chapter: IMangaChapter, i) => (
+                        <ChapterCard
+                          key={chapter.id + i}
+                          chapter={chapter}
+                          mangaId={id}
+                        />
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

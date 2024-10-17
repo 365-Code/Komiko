@@ -5,7 +5,7 @@ import React from "react";
 
 const Page = () => {
   return (
-    <div className="flex flex-1 flex-col gap-6 px-4 pt-6 sm:px-0">
+    <div className="flex flex-1 flex-col gap-6 pt-6">
       <Header />
       <PopularManga />
       <LatestManga />

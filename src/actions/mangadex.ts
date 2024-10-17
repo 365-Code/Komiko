@@ -8,26 +8,30 @@ import {
 export const getMangaInfo = async (mangaId: string) => {
   try {
     const manga = new MANGA.MangaDex();
-    let mangaInfo = (await manga.fetchMangaInfo(mangaId)) as IMangaInfo;
+    const mangaInfo = (await manga.fetchMangaInfo(mangaId)) as IMangaInfo;
     if (!mangaInfo.chapters) {
       return [];
     }
     const chaptersLength = mangaInfo.chapters?.length || 0;
-    const mangaChapters = mangaInfo.chapters as IMangaChapter[];
+    const mangaChapters = mangaInfo.chapters.filter(
+      (ch) => ch.pages != 0,
+    ) as IMangaChapter[];
+    const mangaData = {
+      ...mangaInfo,
+      chapters: [],
+    } as IMangaInfo;
+
     for (let index = 1; index < chaptersLength; index++) {
-      const currElement = (mangaInfo.chapters as IMangaChapter[])[index];
-      const prevElement = (mangaInfo.chapters as IMangaChapter[])[index - 1];
-      if (prevElement != currElement) {
-        mangaChapters.push(currElement);
+      const currElement = (mangaChapters as IMangaChapter[])[index];
+      const prevElement = (mangaChapters as IMangaChapter[])[index - 1];
+      if (prevElement.id != currElement.id) {
+        mangaData.chapters?.push(currElement);
       }
     }
-    console.log(mangaInfo.chapters);
-
-    mangaInfo = {
-      ...mangaInfo,
-      chapters: mangaChapters.reverse(),
-    } as IMangaInfo;
-    return mangaInfo;
+    mangaData.chapters?.reverse();
+    console.log(mangaData);
+    
+    return mangaData;
   } catch (error) {
     throw error;
   }

@@ -1,10 +1,9 @@
 "use client";
-import { IMangaInfo } from "@consumet/extensions";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
-import { Card } from "../ui/card";
+import { BookOpen, Compass } from "lucide-react";
+import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 
 const Header = () => {
   const [lastManga, setLastManga] = useState<{
@@ -17,33 +16,32 @@ const Header = () => {
   } | null>(null);
 
   useEffect(() => {
-    const manga = localStorage.getItem("manga");
     const chapter = localStorage.getItem("chapter");
-    if (manga && chapter) {
-      const lastManga = JSON.parse(manga) as IMangaInfo;
+    if (chapter) {
       const lastChapter = JSON.parse(chapter) as {
         id: string;
-        index: number;
         title: string;
+        description: string;
+        chapterId: string;
+        image: string;
+        index: number;
       };
       setLastManga({
-        id: lastManga.id,
-        title: lastManga.title.toString(),
-        description: String(
-          (lastManga.description as { [index: string]: string })["en"],
-        ),
-        chapterId: lastChapter.id,
+        id: lastChapter.id,
+        title: lastChapter.title.toString(),
+        description: String(lastChapter.description),
+        chapterId: lastChapter.chapterId,
         chapterTitle: lastChapter.title,
-        image: lastManga.image || "/logo.png",
+        image: lastChapter.image || "/komiko.jpg",
       });
     }
   }, []);
 
   return (
-    <>
+    <section className="mb-4 px-4 sm:px-6">
       {lastManga ? (
         // <div className="flex flex-col-reverse items-start gap-4 py-4 md:flex-row">
-        <div className="grid grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 items-center">
           <div className="flex flex-1 flex-col gap-4">
             <h2 className="text-2xl font-medium sm:text-4xl md:text-5xl">
               Keep the story going..
@@ -56,8 +54,8 @@ const Header = () => {
               className="w-fit"
               href={"/manga/" + lastManga.id + "/" + lastManga.chapterId}
             >
-              <Button className="w-fit rounded-full py-6">
-                Continue Reading{" "}<BookOpen size={20} className="text ml-2" />
+              <Button className="w-fit rounded-full">
+                Continue Reading <BookOpen size={20} className="text ml-2" />
               </Button>
             </Link>
           </div>
@@ -65,14 +63,21 @@ const Header = () => {
         </div>
       ) : (
         <div className="flex w-[600px] max-w-full flex-col gap-4">
-          <h2 className="text-5xl font-semibold">Start Your Next Adventure</h2>
-          <p>
+          <h2 className="text-2xl font-medium sm:text-4xl md:text-5xl">
+            Start Your Next Adventure
+          </h2>
+          <p className="text-sm font-medium">
             Dive into captivating worlds and discover stories that will ignite
             your imagination. Your next favorite manga is just a click away!
           </p>
+          <Link className="w-fit" href={"/manga/search"}>
+            <Button className="w-fit rounded-full">
+              Explore <Compass size={20} className="text ml-2" />
+            </Button>
+          </Link>
         </div>
       )}
-    </>
+    </section>
   );
 };
 
@@ -90,16 +95,18 @@ const LastMangaCard = ({
         alt="Featured Manga"
         className="h-full w-full rounded-lg object-cover opacity-40"
       />
-      <div className="absolute inset-0 flex items-end rounded-lg bg-gradient-to-t from-black/40 to-transparent p-6">
-        <div>
+      <div className="absolute inset-0 flex items-end rounded-lg bg-gradient-to-t from-secondary to-transparent">
+        <CardHeader>
           <Link
             href={"/manga/" + lastManga.id}
             className="mb-2 text-2xl font-bold text-primary"
           >
-            {lastManga.title}
+            <CardTitle className="line-clamp-2">{lastManga.title}</CardTitle>
           </Link>
-          <p className="">{lastManga.description}</p>
-        </div>
+          <CardDescription className="line-clamp-4">
+            {lastManga.description}
+          </CardDescription>
+        </CardHeader>
       </div>
     </Card>
   );

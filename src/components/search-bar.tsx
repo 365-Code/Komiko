@@ -15,7 +15,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex items-center gap-2 px-4 sm:px-0">
+    <div className="flex items-center gap-2 px-4 py-4 sm:px-4">
       <form
         onSubmit={(e) => {
           e.preventDefault();

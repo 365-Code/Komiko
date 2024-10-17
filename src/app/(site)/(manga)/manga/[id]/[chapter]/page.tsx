@@ -72,7 +72,7 @@ const Page = ({ params }: PageProps) => {
         }}
         width={500}
         height={500}
-        src="/logo.png"
+        src="/komiko.jpg"
         className="mx-auto my-2 aspect-square w-[500px] max-w-full animate-pulse rounded-xl bg-black/10 p-8"
       />
     ));
@@ -89,6 +89,10 @@ const Page = ({ params }: PageProps) => {
     >
       <Breadcrumb className="px-4 sm:px-0">
         <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink href={"/manga/" + params.id}>
               {manga?.title.toString()}
@@ -138,6 +142,14 @@ const ChapterController = ({ chapter, manga }: ControllerProps) => {
   const params = useParams();
   const mangaId = params.id;
   const chapterId = params.chapter as string;
+
+  const mangaChapters = manga?.chapters as IMangaChapter[];
+  const hasPrev = (chapter && chapter?.index - 1 >= 0) || false;
+  const hasNext =
+    (chapter &&
+      chapter?.index + 1 < (manga?.chapters as IMangaChapter[]).length) ||
+    false;
+
   return (
     <div className="mb-4 flex w-full justify-between px-4 sm:px-0">
       <ComboBox
@@ -150,28 +162,36 @@ const ChapterController = ({ chapter, manga }: ControllerProps) => {
         defaultValue={chapterId}
       />
       <div className="flex items-center gap-2">
-        {chapter && chapter?.index - 1 >= 0 && (
+        {chapter && (
           <Link
-            href={`/manga/${mangaId}/${(manga?.chapters as Array<{ id: string }>)[chapter.index - 1].id}`}
+            className={!hasPrev ? "pointer-events-none" : ""}
+            href={
+              hasPrev
+                ? `/manga/${mangaId}/${mangaChapters[chapter.index - 1].id}`
+                : ""
+            }
           >
-            <Button>
+            <Button disabled={!hasPrev}>
               <ChevronLeft />
               Prev
             </Button>
           </Link>
         )}
-        {chapter &&
-          chapter?.index + 1 <
-            (manga?.chapters as IMangaChapter[]).length - 1 && (
-            <Link
-              href={`/manga/${mangaId}/${(manga?.chapters as IMangaChapter[])[chapter.index + 1].id}`}
-            >
-              <Button>
-                Next
-                <ChevronRight />
-              </Button>
-            </Link>
-          )}
+        {chapter && (
+          <Link
+            className={!hasNext ? "pointer-events-none" : ""}
+            href={
+              hasNext
+                ? `/manga/${mangaId}/${mangaChapters[chapter.index + 1].id}`
+                : ""
+            }
+          >
+            <Button disabled={!hasNext}>
+              Next
+              <ChevronRight />
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );
